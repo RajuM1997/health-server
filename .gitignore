@@ -7,3 +7,5 @@ node_modules
 .vercel
 
 render.yaml
+
+/src/generated/prisma
