@@ -2,6 +2,9 @@ import bcrypt from "bcryptjs";
 import { prisma } from "../../../shared/prisma";
 import { Request } from "express";
 import { fileUploader } from "../../../helpers/fileUploader";
+import { paginationHelper } from "../../../helpers/paginationHelper";
+import { Prisma } from "@prisma/client";
+import { userSearchAbleFields } from "./user.constant";
 
 const createPatient = async (req: Request) => {
   if (req.file) {
@@ -75,8 +78,60 @@ const createDoctor = async (req: Request) => {
   return result;
 };
 
+const getAllUsersFromDB = async (params: any, options: any) => {
+  const { page, limit, skip, sortBy, sortOrder } =
+    paginationHelper.calculatePagination(options);
+  const { searchTerm, ...filterData } = params;
+  const andCondition: Prisma.UserWhereInput[] = [];
+  if (searchTerm) {
+    andCondition.push({
+      OR: userSearchAbleFields.map((field) => ({
+        [field]: {
+          contains: searchTerm,
+          mode: "insensitive",
+        },
+      })),
+    });
+  }
+  if (Object.keys(filterData).length > 0) {
+    andCondition.push({
+      AND: Object.keys(filterData).map((key) => ({
+        [key]: {
+          equals: (filterData as any)[key],
+        },
+      })),
+    });
+  }
+  const whereCondition: Prisma.UserWhereInput =
+    andCondition.length > 0
+      ? {
+          AND: andCondition,
+        }
+      : {};
+  const users = await prisma.user.findMany({
+    skip,
+    take: limit,
+    where: whereCondition,
+    orderBy: {
+      [sortBy]: sortOrder,
+    },
+  });
+  const total = await prisma.user.count({
+    where: whereCondition,
+  });
+  return {
+    meta: {
+      page,
+      limit,
+      total,
+    },
+    data: users,
+  };
+};
+
 export const UserService = {
   createPatient,
   createAdmin,
   createDoctor,
+  getAllUsersFromDB,
 };
