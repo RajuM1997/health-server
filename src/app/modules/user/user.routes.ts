@@ -7,7 +7,7 @@ import { UserRole } from "@prisma/client";
 
 const router = Router();
 
-router.get("/", auth(UserRole.ADMIN), UserController.getAllUsersFromDB);
+router.get("/", UserController.getAllUsersFromDB);
 
 router.post(
   "/create-patient",
