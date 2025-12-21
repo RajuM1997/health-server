@@ -1,0 +1,33 @@
+[
+  {
+    "password": "12345678",
+    "doctor": {
+      "email": "doctor@ph.com",
+      "name": "Mr. Jhon",
+      "contactNumber": "01911223344",
+      "address": "Khulna, Bangladesh",
+      "registrationNumber": "#EDR3334FF#55",
+      "qualification": "A Grade",
+      "designation": "MBBS",
+      "currentWorkingPlace": "PH",
+      "appointmentFee": 500,
+      "gender": "MALE"
+    }
+  },
+  {
+    "password": "12345678",
+    "patient": {
+      "email": "patient@ph.com",
+      "name": "Mr. patient",
+      "address": "Khulna, Bangladesh"
+    }
+  },
+  {
+    "password": "12345678",
+    "admin": {
+      "email": "patient@ph.com",
+      "name": "Mr. patient",
+      "contactNumber": "01967582421"
+    }
+  }
+]

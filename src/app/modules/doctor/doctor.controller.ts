@@ -13,7 +13,6 @@ const getAllFromDB = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const option = pick(req.query, doctorSortAndPaginationFields);
     const filters = pick(req.query, doctorFilterableFields);
-    console.log(filters);
 
     const result = await DoctorService.getAllFromDB(filters, option);
     sendResponse(res, {
