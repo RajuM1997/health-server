@@ -4,68 +4,70 @@ import catchAsync from "../../../shared/catchAsync";
 import sendResponse from "../../../shared/sendResponse";
 import pick from "../../../helpers/pick";
 import {
-  adminSearchableFields,
-  adminSortAndPaginationFields,
-} from "./admin.constant";
-import { AdminService } from "./admin.service";
+  patientSearchableFields,
+  patientSortAndPaginationFields,
+} from "./patient.constant";
+import { PatientService } from "./patient.service";
 
 const getAllFromDB = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const option = pick(req.query, adminSortAndPaginationFields);
-    const filters = pick(req.query, adminSearchableFields);
-    const result = await AdminService.getAllFromDB(option, filters);
+    const option = pick(req.query, patientSortAndPaginationFields);
+    const filters = pick(req.query, patientSearchableFields);
+    const result = await PatientService.getAllFromDB(option, filters);
     sendResponse(res, {
       statusCode: 200,
       success: true,
-      message: "Admin fetched successfully",
+      message: "Patient fetched successfully",
       meta: result.meta,
       data: result.data,
     });
   }
 );
 
-const updateAdmin = catchAsync(
+const updatePatient = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const result = await AdminService.updateAdmin(
+    const result = await PatientService.updatePatient(
       req.params.id as string,
       req.body
     );
     sendResponse(res, {
       statusCode: 200,
       success: true,
-      message: "Admin updated successfully",
+      message: "Patient updated successfully",
       data: result,
     });
   }
 );
 
-const deleteAdmin = catchAsync(
+const deletePatient = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const result = await AdminService.deleteAdmin(req.params.id as string);
+    const result = await PatientService.deletePatient(req.params.id as string);
     sendResponse(res, {
       statusCode: 200,
       success: true,
-      message: "Admin deleted successfully",
+      message: "Patient deleted successfully",
       data: result,
     });
   }
 );
 
-const getSingleAdmin = catchAsync(
+const getSinglePatient = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const result = await AdminService.getSingleAdmin(req.params.id as string);
+    const result = await PatientService.getSinglePatient(
+      req.params.id as string
+    );
     sendResponse(res, {
       statusCode: 200,
       success: true,
-      message: "Admin get successfully",
+      message: "Patient get successfully",
       data: result,
     });
   }
 );
 
-export const AdminController = {
+export const PatientController = {
   getAllFromDB,
-  updateAdmin,
-  getSingleAdmin,
-  deleteAdmin,
+  updatePatient,
+  deletePatient,
+  getSinglePatient,
 };

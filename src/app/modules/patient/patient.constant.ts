@@ -1,19 +1,19 @@
-export const doctorFilterableFields = [
-  "email",
+export const patientFilterAbleFields = [
   "contactNumber",
   "gender",
   "appointmentFee",
+  "email",
   "specialties",
   "searchTerm",
 ];
-export const doctorSortAndPaginationFields = [
+export const patientSortAndPaginationFields = [
   "page",
   "limit",
   "sortBy",
   "sortOrder",
 ];
 
-export const doctorSearchableFields = [
+export const patientSearchableFields = [
   "name",
   "email",
   "contactNumber",
