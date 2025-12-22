@@ -17,12 +17,31 @@ const createPrescription = catchAsync(
 
     sendResponse(res, {
       success: true,
-      statusCode: httpStatus.OK,
+      statusCode: httpStatus.CREATED,
       message: "Prescription created successfully",
+      data: result,
+    });
+  }
+);
+
+const getMyPrescription = catchAsync(
+  async (
+    req: Request & { user?: IJWTPayload },
+    res: Response,
+    next: NextFunction
+  ) => {
+    const user = req.user as IJWTPayload;
+    const result = await PrescriptionService.getMyPrescription(user);
+
+    sendResponse(res, {
+      success: true,
+      statusCode: httpStatus.OK,
+      message: "Prescription fetched successfully",
       data: result,
     });
   }
 );
 export const PrescriptionController = {
   createPrescription,
+  getMyPrescription,
 };

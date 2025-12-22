@@ -47,6 +47,21 @@ const createPrescription = async (
   return result;
 };
 
+const getMyPrescription = async (user: IJWTPayload) => {
+  const patient = await prisma.patient.findUniqueOrThrow({
+    where: {
+      email: user.email,
+    },
+  });
+  const prescription = await prisma.prescription.findMany({
+    where: {
+      patientId: patient.id,
+    },
+  });
+  return prescription;
+};
+
 export const PrescriptionService = {
   createPrescription,
+  getMyPrescription,
 };

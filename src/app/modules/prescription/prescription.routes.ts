@@ -5,6 +5,11 @@ import { UserRole } from "@prisma/client";
 
 const router = Router();
 
+router.get(
+  "/",
+  auth(UserRole.PATIENT),
+  PrescriptionController.getMyPrescription
+);
 router.post(
   "/",
   auth(UserRole.DOCTOR),
