@@ -66,6 +66,11 @@ const getAllFromDB = async (filters: any, options: IOptions) => {
           specialities: true,
         },
       },
+      reviews: {
+        select: {
+          rating: true,
+        },
+      },
     },
   });
   const total = await prisma.doctor.count({ where: whereCondition });
@@ -201,6 +206,7 @@ const getSingleDoctor = async (id: string) => {
           schedule: true,
         },
       },
+      reviews: true,
     },
   });
   return doctor;

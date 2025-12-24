@@ -13,6 +13,13 @@ export default {
   openRouterApiKey: process.env.OPEN_ROUTER_API_KEY,
   stripeSecretKey: process.env.STRIPE_SECRET_KEY,
   client_url: process.env.CLIENT_URL,
+  rest_pass_link: process.env.RESET_PASSWORD_LINK,
+
+  emailSender: {
+    email: process.env.EMAIl_SENDER_EMAIL,
+    app_pass: process.env.EMAIL_SENDER_PASS,
+  },
+
   cloudinary: {
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
     api_key: process.env.CLOUDINARY_API_KEY,

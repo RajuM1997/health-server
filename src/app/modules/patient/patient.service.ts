@@ -2,6 +2,7 @@ import { Patient, Prisma } from "@prisma/client";
 import { IOptions, paginationHelper } from "../../../helpers/paginationHelper";
 import { prisma } from "../../../shared/prisma";
 import { patientFilterAbleFields } from "./patient.constant";
+import { IJWTPayload } from "../../types/common";
 
 const getAllFromDB = async (options: IOptions, filters: any) => {
   const { page, limit, skip, sortBy, sortOrder } =
@@ -69,9 +70,12 @@ const updatePatient = async (id: string, payload: Partial<Patient>) => {
 };
 
 const deletePatient = async (id: string) => {
-  await prisma.patient.delete({
+  await prisma.patient.update({
     where: {
       id,
+    },
+    data: {
+      isDeleted: true,
     },
   });
 };
@@ -85,9 +89,62 @@ const getSinglePatient = async (id: string) => {
   return patient;
 };
 
+const updateIntoDB = async (user: IJWTPayload, payload: any) => {
+  const { medicalReport, patientHealthData, ...patientData } = payload;
+
+  const patientInfo = await prisma.patient.findUniqueOrThrow({
+    where: {
+      email: user.email,
+      isDeleted: false,
+    },
+  });
+
+  return await prisma.$transaction(async (tnx) => {
+    await tnx.patient.update({
+      where: {
+        id: patientInfo.id,
+      },
+      data: patientData,
+    });
+    if (patientHealthData) {
+      await tnx.patientHealthData.upsert({
+        where: {
+          patientId: patientInfo.id,
+        },
+        update: patientHealthData,
+        create: {
+          ...patientHealthData,
+          patientId: patientInfo.id,
+        },
+      });
+    }
+    if (medicalReport) {
+      await tnx.medicalReport.create({
+        data: {
+          ...medicalReport,
+          patientId: patientInfo.id,
+        },
+      });
+    }
+
+    const result = await tnx.patient.findUniqueOrThrow({
+      where: {
+        id: patientInfo.id,
+      },
+      include: {
+        patientHealthData: true,
+        medicalReports: true,
+      },
+    });
+
+    return result;
+  });
+};
+
 export const PatientService = {
   getAllFromDB,
   updatePatient,
   deletePatient,
   getSinglePatient,
+  updateIntoDB,
 };

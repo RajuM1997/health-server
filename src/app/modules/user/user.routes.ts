@@ -8,6 +8,7 @@ import { UserRole } from "@prisma/client";
 const router = Router();
 
 router.get("/", UserController.getAllUsersFromDB);
+router.get("/me", auth(...Object.keys(UserRole)), UserController.getMeProfile);
 
 router.post(
   "/create-patient",
@@ -32,16 +33,10 @@ router.post(
   }
 );
 
-router.post(
-  "/create-doctor",
+router.patch(
+  "/:id/status",
   auth(UserRole.ADMIN),
-  fileUploader.upload.single("file"),
-  (req: Request, res: Response, next: NextFunction) => {
-    req.body = UserValidation.createDoctorValidationSchema.parse(
-      JSON.parse(req.body.data)
-    );
-    return UserController.createDoctor(req, res, next);
-  }
+  UserController.changeProfileStatus
 );
 
 export const userRoutes = router;

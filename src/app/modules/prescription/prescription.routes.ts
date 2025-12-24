@@ -10,6 +10,11 @@ router.get(
   auth(UserRole.PATIENT),
   PrescriptionController.getMyPrescription
 );
+router.get(
+  "/my-prescription",
+  auth(UserRole.PATIENT),
+  PrescriptionController.patientPrescription
+);
 router.post(
   "/",
   auth(UserRole.DOCTOR),

@@ -8,6 +8,7 @@ import {
   patientSortAndPaginationFields,
 } from "./patient.constant";
 import { PatientService } from "./patient.service";
+import { IJWTPayload } from "../../types/common";
 
 const getAllFromDB = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -24,12 +25,15 @@ const getAllFromDB = catchAsync(
   }
 );
 
-const updatePatient = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
-    const result = await PatientService.updatePatient(
-      req.params.id as string,
-      req.body
-    );
+const updateIntoDB = catchAsync(
+  async (
+    req: Request & { user?: IJWTPayload },
+    res: Response,
+    next: NextFunction
+  ) => {
+    const user = req.user as IJWTPayload;
+    const result = await PatientService.updateIntoDB(user, req.body);
+
     sendResponse(res, {
       statusCode: 200,
       success: true,
@@ -67,7 +71,7 @@ const getSinglePatient = catchAsync(
 
 export const PatientController = {
   getAllFromDB,
-  updatePatient,
+  updateIntoDB,
   deletePatient,
   getSinglePatient,
 };
